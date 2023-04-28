@@ -1,0 +1,61 @@
+using System;
+using System.ComponentModel;
+using BepInEx;
+using Utilla;
+
+namespace SpaceMonke
+{
+	// Token: 0x02000002 RID: 2
+	[Description("HauntedModMenu")]
+	[BepInPlugin("org.legoandmars.gorillatag.grabhead", "GrabHead", "1.2.3")]
+	[BepInDependency("org.legoandmars.gorillatag.utilla", "1.5.0")]
+	[ModdedGamemode]
+	public class SpaceMonke : BaseUnityPlugin
+	{
+		// Token: 0x06000001 RID: 1 RVA: 0x000020D4 File Offset: 0x000002D4
+		private void OnEnable()
+		{
+			SpaceMonke.enabled = true;
+			while (SpaceMonke.enabled)
+			{
+				GorillaTagger.Instance.offlineVRRig.head.rigTarget.position = GorillaTagger.Instance.myVRRig.rightHand.rigTarget.position;
+				GorillaTagger.Instance.myVRRig.head.rigTarget.position = GorillaTagger.Instance.myVRRig.rightHand.rigTarget.position;
+				GorillaTagger.Instance.myVRRig.headConstraint.position = GorillaTagger.Instance.myVRRig.rightHand.rigTarget.position;
+				GorillaTagger.Instance.myVRRig.headMesh.transform.position = GorillaTagger.Instance.myVRRig.rightHand.rigTarget.position;
+			}
+		}
+
+		// Token: 0x06000002 RID: 2 RVA: 0x000021BC File Offset: 0x000003BC
+		private void OnDisable()
+		{
+			SpaceMonke.enabled = false;
+			while (!SpaceMonke.enabled)
+			{
+				GorillaTagger.Instance.offlineVRRig.head.rigTarget.position = GorillaTagger.Instance.myVRRig.head.rigTarget.position;
+			}
+			GorillaTagger.Instance.myVRRig.head.rigTarget.position = GorillaTagger.Instance.myVRRig.head.rigTarget.position;
+			GorillaTagger.Instance.myVRRig.headConstraint.position = GorillaTagger.Instance.myVRRig.head.rigTarget.position;
+			GorillaTagger.Instance.myVRRig.headMesh.transform.position = GorillaTagger.Instance.myVRRig.head.rigTarget.position;
+		}
+
+		// Token: 0x06000003 RID: 3 RVA: 0x00002050 File Offset: 0x00000250
+		[ModdedGamemodeJoin]
+		private void RoomJoined()
+		{
+			SpaceMonke.allowGrabHead = true;
+		}
+
+		// Token: 0x06000004 RID: 4 RVA: 0x00002058 File Offset: 0x00000258
+		[ModdedGamemodeLeave]
+		private void RoomLeft()
+		{
+			SpaceMonke.allowGrabHead = false;
+		}
+
+		// Token: 0x04000001 RID: 1
+		public static bool allowGrabHead;
+
+		// Token: 0x04000002 RID: 2
+		public new static bool enabled;
+	}
+}
